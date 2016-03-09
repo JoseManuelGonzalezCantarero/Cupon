@@ -1,6 +1,10 @@
 {% extends '::base.html.twig' %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('css/normalizar.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/comun.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/frontend.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
 {% block javascripts %}{% endblock %}
 
 {% block body %}

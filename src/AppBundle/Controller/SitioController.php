@@ -22,10 +22,7 @@ class SitioController extends Controller
             return new RedirectResponse($this->generateUrl('portada', array('ciudad' => $ciudad)));
         }
         $em = $this->getDoctrine()->getManager();
-        $oferta = $em->getRepository('AppBundle:Oferta')->findOneBy(array(
-            'ciudad' => $this->getParameter('cupon.ciudad_por_defecto'),
-            'fechaPublicacion' => new \DateTime('today')
-        ));
+        $oferta = $em->getRepository('AppBundle:Oferta')->findOfertaDelDia($ciudad);
         if(!$oferta)
         {
             throw $this->createNotFoundException(
