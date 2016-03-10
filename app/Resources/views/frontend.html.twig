@@ -29,7 +29,9 @@
 
     <aside>
         {% block aside %}
-            ## FORMULARIO DE LOGIN ##
+            <section id="login">
+                {{ render(controller('AppBundle:Usuario:cajaLogin')) }}
+            </section>
 
             <section id="nosotros">
                 <h2>Sobre nosotros</h2>

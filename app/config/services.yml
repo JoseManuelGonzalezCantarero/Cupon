@@ -13,3 +13,8 @@ services:
         class: AppBundle\Twig\AppExtension
         tags:
             - { name: twig.extension }
+
+    login_listener:
+        class: AppBundle\EventListener\LoginListener
+        tags:
+            - { name: kernel.event_listener, event: security.interactive_login }

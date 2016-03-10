@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Usuario
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="usuario")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UsuarioRepository")
  */
-class Usuario
+class Usuario implements UserInterface
 {
 
     public function __construct()
@@ -397,5 +398,20 @@ class Usuario
     public function __toString()
     {
         return $this->getNombre().' '.$this->getApellidos();
+    }
+
+    public function getRoles()
+    {
+        return array('ROLE_USUARIO');
+    }
+
+    public function getUsername()
+    {
+        return $this->getEmail();
+    }
+
+    public function eraseCredentials()
+    {
+
     }
 }
