@@ -1,4 +1,5 @@
 {% extends '::base.html.twig' %}
+{% set ciudadSeleccionada = app.request.attributes.get('ciudad', ciudad_por_defecto) %}
 
 {% block stylesheets %}
     <link href="{{ asset('css/normalizar.css') }}" rel="stylesheet" type="text/css" />
@@ -15,6 +16,9 @@
                 <li><a href="{{ path('portada') }}">Oferta del día</a></li>
                 <li><a href="#">Ofertas recientes</a></li>
                 <li><a href="#">Mis ofertas</a></li>
+                <li>{{ render(controller('AppBundle:Ciudad:listaCiudades', {
+                        'ciudad': ciudadSeleccionada
+                    })) }}</li>
             </ul>
         </nav>
     </header>
@@ -24,6 +28,13 @@
     </article>
 
     <aside>
-        {% block aside %}{% endblock %}
+        {% block aside %}
+            ## FORMULARIO DE LOGIN ##
+
+            <section id="nosotros">
+                <h2>Sobre nosotros</h2>
+                <p>Lorem ipsum dolor sit amet...</p>
+            </section>
+        {% endblock %}
     </aside>
 {% endblock %}
