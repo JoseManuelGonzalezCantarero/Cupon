@@ -1,0 +1,3 @@
+{% for mensaje in app.session.flashbag.get('info') %}
+    <p class="info">{{ mensaje }}</p>
+{% endfor %}

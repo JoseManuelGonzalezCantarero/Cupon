@@ -1,6 +1,6 @@
 <?php
 
-namespace Cupon\AppBundle\DataFixtures\ORM;
+namespace AppBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -13,7 +13,7 @@ class Ofertas extends AbstractFixture implements OrderedFixtureInterface, Contai
 {
     public function getOrder()
     {
-        return 30;
+        return 3;
     }
     private $container;
     public function setContainer(ContainerInterface $container = null)

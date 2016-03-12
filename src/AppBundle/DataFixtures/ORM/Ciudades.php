@@ -1,6 +1,6 @@
 <?php
 
-namespace Cupon\AppBundle\DataFixtures\ORM;
+namespace AppBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -8,6 +8,10 @@ use AppBundle\Entity\Ciudad;
 
 class Ciudades implements FixtureInterface
 {
+    public function getOrder()
+    {
+        return 1;
+    }
     public function load(ObjectManager $manager)
     {
         $ciudades = array(

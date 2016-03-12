@@ -2,9 +2,15 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Usuario;
+use AppBundle\Form\Frontend\UsuarioType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class UsuarioController extends Controller
 {
@@ -62,5 +68,95 @@ class UsuarioController extends Controller
     public function logoutAction()
     {
         throw new \Exception('This should never be reached!');
+    }
+
+    /**
+     * @param Request $peticion
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/usuario/registro/", name="usuarioRegistro")
+     */
+    public function registroAction(Request $peticion)
+    {
+        $usuario = new Usuario();
+        $usuario->setPermiteEmail(true);
+        $usuario->setFechaNacimiento(new \DateTime('today - 18 years'));
+
+        $formulario = $this->createForm(UsuarioType::class, $usuario);
+        $formulario->handleRequest($peticion);
+
+        if($formulario->isValid())
+        {
+            $encoder = $this->container->get('security.password_encoder');
+            $passwordCodificado = $encoder->encodePassword($usuario, $usuario->getPassword());
+            $usuario->setPassword($passwordCodificado);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($usuario);
+            $em->flush();
+
+            $this->get('session')->getFlashBag()->add('info', '¡Enhorabuena! Te has registrado correctamente en Cupon');
+
+            $token = new UsernamePasswordToken(
+                $usuario,
+                $usuario->getPassword(),
+                'frontend',
+                $usuario->getRoles()
+            );
+            $this->container->get('security.token_storage')->setToken($token);
+            return $this->redirectToRoute('portada', array(
+                'ciudad' => $usuario->getCiudad()->getSlug()
+            ));
+        }
+
+        return $this->render('usuario/registro.html.twig', array(
+            'formulario' => $formulario->createView()
+        ));
+    }
+
+    /**
+     * @Route("/usuario/perfil/", name="usuarioPerfil")
+     */
+    public function perfilAction(Request $peticion)
+    {
+        $usuario = $this->getUser();
+        $formulario = $this->createForm(UsuarioType::class, $usuario);
+        $formulario->remove('registrarme')
+                   ->add('guardar', SubmitType::class, array('label' => 'Guardar cambios'));
+        $formulario->remove('password')
+                    ->add('password', RepeatedType::class, array(
+                        'type' => PasswordType::class,
+                        'required' => false,
+                        'invalid_message' => 'Las dos contraseñas deben coincidir',
+                        'first_options' => array('label' => 'Contraseña'),
+                        'second_options' => array('label' => 'Repite Contraseña'),
+                    ));
+        $passwordOriginal = $formulario->getData()->getPassword();
+        $formulario->handleRequest($peticion);
+
+        if($formulario->isValid())
+        {
+            if($usuario->getPassword() == null)
+            {
+                $usuario->setPassword($passwordOriginal);
+            }
+            else
+            {
+                $encoder = $this->container->get('security.password_encoder');
+                $passwordCodificado = $encoder->encodePassword($usuario, $usuario->getPassword());
+                $usuario->setPassword($passwordCodificado);
+            }
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($usuario);
+            $em->flush();
+
+            $this->get('session')->getFlashBag()->add('info', 'Los datos de tu perfil se han actualizado correctamente');
+
+            return $this->redirectToRoute('usuarioPerfil');
+        }
+
+        return $this->render('usuario/perfil.html.twig', array(
+            'usuario' => $usuario,
+            'formulario' => $formulario->createView()
+        ));
     }
 }

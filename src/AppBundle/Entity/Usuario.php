@@ -4,12 +4,16 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Usuario
  *
  * @ORM\Table(name="usuario")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UsuarioRepository")
+ * @DoctrineAssert\UniqueEntity("email")
  */
 class Usuario implements UserInterface
 {
@@ -32,6 +36,7 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="nombre", type="string", length=100)
+     * @Assert\NotBlank()
      */
     private $nombre;
 
@@ -45,7 +50,8 @@ class Usuario implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=255)
+     * @ORM\Column(name="email", type="string", length=255, unique=true)
+     * @Assert\Email()
      */
     private $email;
 
@@ -53,6 +59,7 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255)
+     * @Assert\Length(min="6")
      */
     private $password;
 
@@ -413,5 +420,34 @@ class Usuario implements UserInterface
     public function eraseCredentials()
     {
 
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     * @Assert\Callback
+     */
+    public function esDniValido(ExecutionContextInterface $context)
+    {
+        $dni = $this->getDni();
+
+        // Comprobar que el formato sea correcto
+        if (0 === preg_match("/\d{1,8}[a-z]/i", $dni)) {
+            $context->buildViolation('El DNI introducido no tiene el formato correcto (entre 1 y 8 números seguidos de una letra, sin guiones
+                y sin dejar ningún espacio en blanco)')
+                ->setTranslationDomain('dni')
+                ->addViolation();
+
+            return;
+        }
+
+        // Comprobar que la letra cumple con el algoritmo
+        $numero = substr($dni, 0, -1);
+        $letra  = strtoupper(substr($dni, -1));
+        if ($letra != substr("TRWAGMYFPDXBNJZSQVHLCKE", strtr($numero, "XYZ", "012")%23, 1)) {
+            $context->buildViolation('La letra no coincide con el número del DNI. Comprueba que has escrito bien
+            tanto el número como la letra')
+                ->setTranslationDomain('dni')
+                ->addViolation();
+        }
     }
 }

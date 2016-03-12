@@ -1,19 +1,29 @@
-<h2>Accede a tu cuenta</h2>
+{% if is_granted('ROLE_USUARIO') %}
 
-<form action="{{ path('usuarioLoginCheck') }}" method="post">
-    {% if error %}
-        <div>{{ error.message }}</div>
-    {% endif %}
+    {% include 'includes/flashes.html.twig' %}
+    <p>Conectado como {{ app.user }}</p>
 
-    <label for="login_user">Email</label>
-    <input id="login_user" type="text" name="_username"
-           value="{{ last_username | default('') }}" />
+    <a href="{{ path('usuarioPerfil') }}">Ver mi perfil</a>
+    <a href="{{ path('usuarioLogout') }}">Cerrar sesión</a>
+{% else %}
+    <a class="boton" href="{{ path('usuarioRegistro') }}">Regístrate</a>
+    <h2>Accede a tu cuenta</h2>
 
-    <label for="login_pass">Contraseña</label>
-    <input id="login_pass" type="password" name="_password" />
+    <form action="{{ path('usuarioLoginCheck') }}" method="post">
+        {% if error %}
+            <div>{{ error.message }}</div>
+        {% endif %}
 
-    <input type="submit" value="Entrar" />
+        <label for="login_user">Email</label>
+        <input id="login_user" type="text" name="_username"
+               value="{{ last_username | default('') }}" />
 
-    <input type="checkbox" id="no_cerrar" name="_remember_me" checked />
-    <label for="no_cerrar">No cerrar sesión</label>
-</form>
+        <label for="login_pass">Contraseña</label>
+        <input id="login_pass" type="password" name="_password" />
+
+        <input type="submit" value="Entrar" />
+
+        <input type="checkbox" id="no_cerrar" name="_remember_me" checked />
+        <label for="no_cerrar">No cerrar sesión</label>
+    </form>
+{% endif %}

@@ -1,22 +1,22 @@
 <?php
 
-namespace Cupon\AppBundle\DataFixtures\ORM;
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+namespace AppBundle\DataFixtures\ORM;
+
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use AppBundle\Entity\Ciudad;
 use AppBundle\Entity\Tienda;
+use Doctrine\Common\DataFixtures\FixtureInterface;
 /**
  * Fixtures de la entidad Tienda.
  * Crea para cada ciudad entre 2 y 5 tiendas con información muy realista.
  */
-class Tiendas extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
+class Tiendas implements FixtureInterface, ContainerAwareInterface
 {
     public function getOrder()
     {
-        return 20;
+        return 2;
     }
     private $container;
     public function setContainer(ContainerInterface $container = null)
@@ -34,10 +34,12 @@ class Tiendas extends AbstractFixture implements OrderedFixtureInterface, Contai
                 $tienda = new Tienda();
                 $tienda->setNombre($this->getNombre());
                 $tienda->setLogin('tienda'.$i);
-                $tienda->setSalt(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
+                //$tienda->setSalt(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
+                $tienda->setSalt('');
                 $passwordEnClaro = 'tienda'.$i;
-                $encoder = $this->container->get('security.encoder_factory')->getEncoder($tienda);
-                $passwordCodificado = $encoder->encodePassword($passwordEnClaro, $tienda->getSalt());
+                //$encoder = $this->container->get('security.encoder_factory')->getEncoder($tienda);
+                $encoder = $this->container->get('security.password_encoder');
+                $passwordCodificado = $encoder->encodePassword($tienda, $passwordEnClaro);
                 $tienda->setPassword($passwordCodificado);
                 $tienda->setDescripcion($this->getDescripcion());
                 $tienda->setDireccion($this->getDireccion($ciudad));

@@ -1,6 +1,6 @@
 <?php
 
-namespace Cupon\AppBundle\DataFixtures\ORM;
+namespace AppBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;

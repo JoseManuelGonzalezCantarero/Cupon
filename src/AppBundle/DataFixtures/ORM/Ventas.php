@@ -1,6 +1,6 @@
 <?php
 
-namespace Cupon\AppBundle\DataFixtures\ORM;
+namespace AppBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -15,7 +15,7 @@ class Ventas extends AbstractFixture implements OrderedFixtureInterface
 {
     public function getOrder()
     {
-        return 50;
+        return 5;
     }
     public function load(ObjectManager $manager)
     {

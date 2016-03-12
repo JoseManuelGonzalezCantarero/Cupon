@@ -1,22 +1,22 @@
 <?php
 
-namespace Cupon\AppBundle\DataFixtures\ORM;
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+namespace AppBundle\DataFixtures\ORM;
+
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use AppBundle\Entity\Ciudad;
 use AppBundle\Entity\Usuario;
+use Doctrine\Common\DataFixtures\FixtureInterface;
 /**
  * Fixtures de la entidad Usuario.
  * Crea 200 usuarios de prueba con información muy realista.
  */
-class Usuarios extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
+class Usuarios implements FixtureInterface, ContainerAwareInterface
 {
     public function getOrder()
     {
-        return 40;
+        return 4;
     }
     private $container;
     public function setContainer(ContainerInterface $container = null)
@@ -32,10 +32,11 @@ class Usuarios extends AbstractFixture implements OrderedFixtureInterface, Conta
             $usuario->setNombre($this->getNombre());
             $usuario->setApellidos($this->getApellidos());
             $usuario->setEmail('usuario'.$i.'@localhost');
-            $usuario->setSalt(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
+            //$usuario->setSalt(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
+            $usuario->setSalt('');
             $passwordEnClaro = 'usuario'.$i;
-            $encoder = $this->container->get('security.encoder_factory')->getEncoder($usuario);
-            $passwordCodificado = $encoder->encodePassword($passwordEnClaro, $usuario->getSalt());
+            $encoder = $this->container->get('security.password_encoder');
+            $passwordCodificado = $encoder->encodePassword($usuario, $passwordEnClaro);
             $usuario->setPassword($passwordCodificado);
             $ciudad = $ciudades[array_rand($ciudades)];
             $usuario->setDireccion($this->getDireccion($ciudad));

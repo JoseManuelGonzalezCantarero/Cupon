@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use AppBundle\Utils\Utils;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Tienda
@@ -11,8 +12,23 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="tiendas")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\TiendaRepository")
  */
-class Tienda
+class Tienda implements UserInterface
 {
+    public function getRoles()
+    {
+        return array('ROLE_USUARIO');
+    }
+
+    public function getUsername()
+    {
+        return $this->getNombre();
+    }
+
+    public function eraseCredentials()
+    {
+
+    }
+
     /**
      * @var int
      *

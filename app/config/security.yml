@@ -6,6 +6,8 @@ security:
             form_login:
                 login_path: /usuario/login/
                 check_path: /usuario/login_check/
+            logout:
+                path: /usuario/logout/
 
     access_control:
         - { path: ^/usuario/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -18,4 +20,5 @@ security:
 
     encoders:
 #        AppBundle\Entity\Usuario: { algorithm: sha512, iterations: 10 }
-        AppBundle\Entity\Usuario: plaintext
+        AppBundle\Entity\Usuario: bcrypt
+        AppBundle\Entity\Tienda: bcrypt
