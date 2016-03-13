@@ -69,7 +69,7 @@ class Tienda implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="salt", type="string", length=255)
+     * @ORM\Column(name="salt", type="string", length=255, nullable=true)
      */
     private $salt;
 

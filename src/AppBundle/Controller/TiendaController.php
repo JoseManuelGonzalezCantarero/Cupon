@@ -12,7 +12,7 @@ class TiendaController extends Controller
      * @param $ciudad
      * @param $tienda
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/{ciudad}/tiendas/{tienda}/", name="tiendaPortada")
+     * @Route("/{_locale}/{ciudad}/tiendas/{tienda}/", name="tiendaPortada", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      */
     public function portadaAction($ciudad, $tienda, Request $request)
     {

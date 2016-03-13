@@ -11,7 +11,7 @@ class OfertaController extends Controller
      * @param $ciudad
      * @param $slug
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/{ciudad}/ofertas/{slug}/", name="oferta")
+     * @Route("/{_locale}/{ciudad}/ofertas/{slug}/", name="oferta", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      */
     public function ofertaAction($ciudad, $slug)
     {

@@ -12,7 +12,7 @@ class SitioController extends Controller
      * @param $ciudad
      * @return RedirectResponse
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/{ciudad}", name="portada")
+     * @Route("/{_locale}/{ciudad}", name="portada", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      */
     public function portadaAction($ciudad = null)
     {
@@ -37,7 +37,7 @@ class SitioController extends Controller
     /**
      * @param $pagina
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/sitio/{pagina}/", name="paginaEstatica")
+     * @Route("/{_locale}/sitio/{pagina}/", name="paginaEstatica", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      */
     public function estaticaAction($pagina)
     {

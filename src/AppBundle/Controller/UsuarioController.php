@@ -16,7 +16,7 @@ class UsuarioController extends Controller
 {
     /**
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/usuario/compras/", name="usuarioCompras")
+     * @Route("/{_locale}/usuario/compras/", name="usuarioCompras", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      */
     public function comprasAction()
     {
@@ -32,7 +32,7 @@ class UsuarioController extends Controller
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/usuario/login/", name="usuarioLogin")
+     * @Route("/{_locale}/usuario/login/", name="usuarioLogin", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      */
     public function loginAction()
     {
@@ -55,7 +55,7 @@ class UsuarioController extends Controller
     }
 
     /**
-     * @Route("/usuario/login_check/", name="usuarioLoginCheck")
+     * @Route("/{_locale}/usuario/login_check/", name="usuarioLoginCheck", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      */
     public function loginCheckAction()
     {
@@ -63,7 +63,7 @@ class UsuarioController extends Controller
     }
 
     /**
-     * @Route("/usuario/logout/", name="usuarioLogout")
+     * @Route("/{_locale}/usuario/logout/", name="usuarioLogout", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      */
     public function logoutAction()
     {
@@ -73,7 +73,7 @@ class UsuarioController extends Controller
     /**
      * @param Request $peticion
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/usuario/registro/", name="usuarioRegistro")
+     * @Route("/{_locale}/usuario/registro/", name="usuarioRegistro", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      */
     public function registroAction(Request $peticion)
     {
@@ -114,7 +114,7 @@ class UsuarioController extends Controller
     }
 
     /**
-     * @Route("/usuario/perfil/", name="usuarioPerfil")
+     * @Route("/{_locale}/usuario/perfil/", name="usuarioPerfil", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      */
     public function perfilAction(Request $peticion)
     {

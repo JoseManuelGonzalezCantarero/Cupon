@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 class CiudadController extends Controller
 {
     /**
-     * @Route("/ciudad/cambiar-a-{ciudad}/", name = "ciudadCambiar")
+     * @Route("/{_locale}/ciudad/cambiar-a-{ciudad}/", name = "ciudadCambiar", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      * @param $ciudad
      * @return RedirectResponse
      */
@@ -36,7 +36,8 @@ class CiudadController extends Controller
     /**
      * @param $ciudad
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/{ciudad}/recientes.{_format}/", name="ciudadRecientes", defaults={"_format": "html"}, requirements={"_format": "html|rss"})
+     * @Route("/{_locale}/{ciudad}/recientes.{_format}/", name="ciudadRecientes", defaults={"_format": "html", "_locale": "es"},
+     *          requirements={"_format": "html|rss", "_locale": "es|en"})
      */
     public function recientesAction($ciudad, Request $request)
     {
