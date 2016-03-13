@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class CiudadController extends Controller
 {
@@ -35,9 +36,9 @@ class CiudadController extends Controller
     /**
      * @param $ciudad
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/{ciudad}/recientes/", name="ciudadRecientes")
+     * @Route("/{ciudad}/recientes.{_format}/", name="ciudadRecientes", defaults={"_format": "html"}, requirements={"_format": "html|rss"})
      */
-    public function recientesAction($ciudad)
+    public function recientesAction($ciudad, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -51,7 +52,9 @@ class CiudadController extends Controller
 
         $ofertas = $em->getRepository('AppBundle:Oferta')->findRecientes($ciudad->getId());
 
-        return $this->render('ciudad/recientes.html.twig', array(
+        $formato = $request->getRequestFormat();
+
+        return $this->render('ciudad/recientes.'.$formato.'.twig', array(
             'ciudad' => $ciudad,
             'cercanas' => $cercanas,
             'ofertas' => $ofertas

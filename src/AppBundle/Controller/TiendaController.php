@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class TiendaController extends Controller
 {
@@ -13,7 +14,7 @@ class TiendaController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/{ciudad}/tiendas/{tienda}/", name="tiendaPortada")
      */
-    public function portadaAction($ciudad, $tienda)
+    public function portadaAction($ciudad, $tienda, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -34,7 +35,9 @@ class TiendaController extends Controller
         $cercanas = $em->getRepository('AppBundle:Tienda')
             ->findCercanas($tienda->getSlug(), $tienda->getCiudad()->getSlug());
 
-        return $this->render('tienda/portada.html.twig', array(
+        $formato = $request->getRequestFormat();
+
+        return $this->render('tienda/portada.'.$formato.'.twig', array(
            'tienda' => $tienda,
             'ofertas' => $ofertas,
             'cercanas' => $cercanas
