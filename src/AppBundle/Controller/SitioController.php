@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class SitioController extends Controller
 {
@@ -36,11 +37,12 @@ class SitioController extends Controller
 
     /**
      * @param $pagina
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/{_locale}/sitio/{pagina}/", name="paginaEstatica", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
      */
-    public function estaticaAction($pagina)
+    public function estaticaAction($pagina, Request $request)
     {
-        return $this->render('estatico/'.$pagina.'.html.twig');
+        return $this->render('estatico/'.$request->getLocale().'/'.$pagina.'.html.twig');
     }
 }

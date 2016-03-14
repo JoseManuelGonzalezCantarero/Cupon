@@ -1,4 +1,4 @@
-{% set expirada = oferta.fechaExpiracion|date('YmdHis') < 'now'|date('YmdHis') %}
+{% set expirada = oferta.fechaExpiracion|localizeddate('short') < 'now'|localizeddate('short') %}
 {% set comprada = comprada | default(false) %}
 <section class="oferta mini">
     <div class="descripcion">
@@ -12,11 +12,11 @@
 
         <div id="tiempo" class="estado {{ expirada ? 'expirada' : '' }} {{ comprada ? 'comprada':'' }}">
             {% if comprada %}
-                Comprada el {{ fechaCompra | date('d/m/Y') }}
+                Comprada el {{ fechaCompra | localizeddate('short') }}
             {% elseif not expirada %}
                 <strong>Faltan</strong>: {{ oferta.fechaExpiracion | cuenta_atras }}
             {% else %}
-                Finalizada el {{ oferta.fechaExpiracion | date('d/m/Y') }}
+                Finalizada el {{ oferta.fechaExpiracion | localizeddate('short') }}
             {% endif %}
         </div>
     </div>

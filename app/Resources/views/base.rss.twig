@@ -10,11 +10,11 @@
             {% endblock %}</language>
 
         <pubDate>{% block fechaPublicacion %}
-                {{ 'now'|date('r') }}
+                {{ 'now'|localizeddate('short') }}
             {% endblock %}</pubDate>
 
         <lastBuildDate>{% block fechaCreacion %}
-                {{ 'now'|date('r') }}
+                {{ 'now'|localizeddate('short') }}
             {% endblock %}</lastBuildDate>
 
         <generator>Symfony2</generator>

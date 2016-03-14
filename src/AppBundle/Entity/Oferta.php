@@ -4,8 +4,6 @@ namespace AppBundle\Entity;
 
 use AppBundle\Utils\Utils;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Translatable\Translatable;
 
 /**
  * Oferta
@@ -28,7 +26,6 @@ class Oferta
      * @var string
      *
      * @ORM\Column(name="nombre", type="string", length=255)
-     * @Gedmo\Translatable
      */
     private $nombre;
 
@@ -43,7 +40,6 @@ class Oferta
      * @var string
      *
      * @ORM\Column(name="descripcion", type="text")
-     * @Gedmo\Translatable
      */
     private $descripcion;
 
@@ -115,11 +111,6 @@ class Oferta
 
     /** @ORM\ManyToOne(targetEntity="AppBundle\Entity\Tienda") */
     private $tienda;
-
-    /**
-     * @Gedmo\Locale
-     */
-    private $locale;
 
     /**
      * Get id
@@ -452,11 +443,6 @@ class Oferta
     public function getTienda()
     {
         return $this->tienda;
-    }
-
-    public function setTranslatableLocale($locale)
-    {
-        $this->locale = $locale;
     }
 
     public function __toString()

@@ -30,7 +30,7 @@
                 {{ oferta.descripcion | mostrar_como_lista }}
                 <a href="#">Comprar</a>
                 ]]></description>
-            <pubDate>{{ oferta.fechaPublicacion | date('r') }}</pubDate>
+            <pubDate>{{ oferta.fechaPublicacion | localizeddate('short') }}</pubDate>
             <guid>{{ url('oferta', { 'ciudad': oferta.ciudad.slug,
                     'slug':   oferta.slug }) }}</guid>
         </item>
