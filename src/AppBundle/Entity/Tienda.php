@@ -16,12 +16,12 @@ class Tienda implements UserInterface
 {
     public function getRoles()
     {
-        return array('ROLE_USUARIO');
+        return array('ROLE_TIENDA');
     }
 
     public function getUsername()
     {
-        return $this->getNombre();
+        return $this->getLogin();
     }
 
     public function eraseCredentials()

@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ExtranetController extends Controller
 {
@@ -29,6 +30,13 @@ class ExtranetController extends Controller
      */
     public function ofertaEditarAction($id)
     {
+        $em = $this->getDoctrine()->getManager();
+        $oferta = $em->getRepository('AppBundle:Oferta')->find($id);
+
+        if(false === $this->get('security.authorization_checker')->isGranted('ROLE_EDITAR_OFERTA', $oferta))
+        {
+            throw new AccessDeniedException();
+        }
 
     }
 
@@ -47,6 +55,34 @@ class ExtranetController extends Controller
     public function perfilAction()
     {
 
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/extranet/login/")
+     */
+    public function loginAction()
+    {
+        $helper = $this->get('security.authentication_utils');
+        return $this->render('extranet/login.html.twig', array(
+            'error' => $helper->getLastAuthenticationError()
+        ));
+    }
+
+    /**
+     * @Route("/extranet/login_check/", name="extranetLoginCheck")
+     */
+    public function loginCheckAction()
+    {
+        throw new \Exception('This should never be reached!');
+    }
+
+    /**
+     * @Route("/extranet/logout/", name="extranetLogout")
+     */
+    public function logoutAction()
+    {
+        throw new \Exception('This should never be reached!');
     }
 
 }
