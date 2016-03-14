@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\Extranet\TiendaType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ExtranetController extends Controller
@@ -50,6 +52,7 @@ class ExtranetController extends Controller
     /**
      * @param $id
      * @Route("/extranet/ventas/{id}/", name="extranetOfertaVentas")
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function ofertaVentasAction($id)
     {
@@ -66,9 +69,40 @@ class ExtranetController extends Controller
     /**
      * @Route("/extranet/perfil/", name="extranetPerfil")
      */
-    public function perfilAction()
+    public function perfilAction(Request $peticion)
     {
+        $tienda = $this->get('security.token_storage')->getToken()->getUser();
+        $formulario = $this->createForm('AppBundle\Form\Extranet\TiendaType', $tienda);
 
+        $passwordOriginal = $formulario->getData()->getPassword();
+
+        $formulario->handleRequest($peticion);
+
+        if ($formulario->isValid()) {
+            if (null == $tienda->getPassword()) {
+                // La tienda no cambia su contraseña, utilizar la original
+                $tienda->setPassword($passwordOriginal);
+            } else {
+                // La tienda cambia su contraseña, codificar su valor
+                $encoder = $this->container->get('security.password_encoder');
+                $passwordCodificado = $encoder->encodePassword($tienda, $tienda->getPassword());
+                $tienda->setPassword($passwordCodificado);
+            }
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($tienda);
+            $em->flush();
+
+            $this->get('session')->getFlashBag()->add('info',
+                'Los datos de tu perfil se han actualizado correctamente'
+            );
+
+            return $this->redirectToRoute('extranetPortada');
+        }
+
+        return $this->render('extranet/perfil.html.twig', array(
+            'tienda'     => $tienda,
+            'formulario' => $formulario->createView()
+        ));
     }
 
     /**

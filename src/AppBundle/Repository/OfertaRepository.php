@@ -92,4 +92,20 @@ class OfertaRepository extends EntityRepository
 
         return $consulta->getResult();
     }
+
+    public function findVentasByOferta($oferta)
+    {
+        $em = $this->getEntityManager();
+
+        $consulta = $em->createQuery('
+            SELECT v, o, u
+              FROM AppBundle:Venta v
+              JOIN v.oferta o JOIN v.usuario u
+             WHERE o.id = :id
+          ORDER BY v.fecha DESC
+        ');
+        $consulta->setParameter('id', $oferta);
+
+        return $consulta->getResult();
+    }
 }
