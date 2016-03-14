@@ -49,4 +49,23 @@ class TiendaRepository extends EntityRepository
 
         return $consulta->getResult();
     }
+
+    public function findOfertasRecientes($tienda_id, $limite = null)
+    {
+        $em = $this->getEntityManager();
+
+        $consulta = $em->createQuery('
+        SELECT o, t FROM AppBundle:Oferta o JOIN o.tienda t
+        WHERE o.tienda = :id
+        ORDER BY o.fechaExpiracion DESC');
+
+        $consulta->setParameter('id', $tienda_id);
+
+        if($limite != null)
+        {
+            $consulta->setMaxResults($limite);
+        }
+
+        return $consulta->getResult();
+    }
 }
