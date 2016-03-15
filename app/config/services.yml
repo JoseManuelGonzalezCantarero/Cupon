@@ -30,8 +30,7 @@ services:
         class: Twig_Extensions_Extension_Intl
         tags: [{ name: 'twig.extension'}]
 
-    cupon.tiendabundle.security.ownervoter:
+    appbundle.security.ownervoter:
         class: AppBundle\Security\OwnerVoter
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
         tags:
             - { name: security.voter }

@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Oferta;
+use AppBundle\Form\Extranet\OfertaType;
 use AppBundle\Form\Extranet\TiendaType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -28,25 +30,98 @@ class ExtranetController extends Controller
     /**
      * @Route("/extranet/oferta/nueva/", name="extranetOfertaNueva")
      */
-    public function ofertaNuevaAction()
+    public function ofertaNuevaAction(Request $peticion)
     {
+        $oferta = new Oferta();
+        $formulario = $this->createForm(OfertaType::class, $oferta);
 
+        $formulario->handleRequest($peticion);
+
+        if($formulario->isValid())
+        {
+            $tienda = $this->get('security.token_storage')->getToken()->getUser();
+
+            $oferta->setCompras(0);
+            $oferta->setTienda($tienda);
+            $oferta->setCiudad($tienda->getCiudad());
+            $oferta->setFechaPublicacion(new \DateTime('now'));
+            $oferta->setFechaExpiracion(new \DateTime('now +15 day'));
+            $oferta->setRevisada(false);
+            $oferta->subirFoto(
+                $this->container->getParameter('cupon.directorio.imagenes')
+            );
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($oferta);
+            $em->flush();
+
+            return $this->redirectToRoute('extranetPortada');
+        }
+
+        return $this->render('extranet/formulario.html.twig', array(
+            'accion' => 'crear',
+            'formulario' => $formulario->createView()
+        ));
     }
 
     /**
      * @param $id
+     * @param Request $peticion
+     * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/extranet/oferta/editar/{id}/", name="extranetOfertaEditar")
      */
-    public function ofertaEditarAction($id)
+    public function ofertaEditarAction($id, Request $peticion)
     {
         $em = $this->getDoctrine()->getManager();
         $oferta = $em->getRepository('AppBundle:Oferta')->find($id);
+
+        if(!$oferta)
+        {
+            throw $this->createNotFoundException('La oferta no existe');
+        }
 
         if(false === $this->get('security.authorization_checker')->isGranted('ROLE_EDITAR_OFERTA', $oferta))
         {
             throw new AccessDeniedException();
         }
 
+        if($oferta->getRevisada())
+        {
+            $this->get('session')->getFlashBag()->add('error', 'La oferta no se puede modificar porque ya ha sido
+            revisada');
+
+            return $this->redirectToRoute('extranetPortada');
+        }
+
+        $formulario = $this->createForm(OfertaType::class, $oferta);
+
+        $rutaFotoOriginal = $formulario->getData()->getRutaFoto();
+
+        $formulario->handleRequest($peticion);
+
+        if($formulario->isValid())
+        {
+            if($oferta->getFoto() == null)
+            {
+                $oferta->setRutaFoto($rutaFotoOriginal);
+            }
+            else
+            {
+                $directorioFotos = $this->container->getParameter('cupon.directorio.imagenes');
+                $oferta->subirFoto($directorioFotos);
+                unlink($directorioFotos.$rutaFotoOriginal);
+            }
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($oferta);
+            $em->flush();
+
+            return $this->redirectToRoute('extranetPortada');
+        }
+
+        return $this->render('extranet/formulario.html.twig', array(
+            'accion' => 'editar',
+            'oferta' => $oferta,
+            'formulario' => $formulario->createView()
+        ));
     }
 
     /**

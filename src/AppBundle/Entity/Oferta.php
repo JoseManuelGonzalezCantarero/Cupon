@@ -4,6 +4,8 @@ namespace AppBundle\Entity;
 
 use AppBundle\Utils\Utils;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Oferta
@@ -26,6 +28,7 @@ class Oferta
      * @var string
      *
      * @ORM\Column(name="nombre", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nombre;
 
@@ -33,6 +36,7 @@ class Oferta
      * @var string
      *
      * @ORM\Column(name="slug", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $slug;
 
@@ -40,6 +44,8 @@ class Oferta
      * @var string
      *
      * @ORM\Column(name="descripcion", type="text")
+     * @Assert\NotBlank()
+     * @Assert\Length(min="30")
      */
     private $descripcion;
 
@@ -61,6 +67,7 @@ class Oferta
      * @var string
      *
      * @ORM\Column(name="precio", type="decimal", precision=10, scale=2)
+     * @Assert\Range(min="0")
      */
     private $precio;
 
@@ -75,6 +82,7 @@ class Oferta
      * @var \DateTime
      *
      * @ORM\Column(name="fecha_publicacion", type="datetime")
+     * @Assert\DateTime()
      */
     private $fechaPublicacion;
 
@@ -82,6 +90,7 @@ class Oferta
      * @var \DateTime
      *
      * @ORM\Column(name="fecha_expiracion", type="datetime")
+     * @Assert\DateTime()
      */
     private $fechaExpiracion;
 
@@ -96,6 +105,7 @@ class Oferta
      * @var int
      *
      * @ORM\Column(name="umbral", type="integer")
+     * @Assert\Range(min="0")
      */
     private $umbral;
 
@@ -111,6 +121,11 @@ class Oferta
 
     /** @ORM\ManyToOne(targetEntity="AppBundle\Entity\Tienda") */
     private $tienda;
+
+    /**
+     * @Assert\Image(maxSize="500k")
+     */
+    private $foto;
 
     /**
      * Get id
@@ -445,8 +460,51 @@ class Oferta
         return $this->tienda;
     }
 
+    /**
+     * @param UploadedFile $foto
+     */
+    public function setFoto(UploadedFile $foto = null)
+    {
+        $this->foto = $foto;
+    }
+
+    /**
+     * @return UploadedFile
+     */
+    public function getFoto()
+    {
+        return $this->foto;
+    }
+
     public function __toString()
     {
         return $this->getNombre();
+    }
+
+    /**
+     * @Assert\IsTrue(message="La fecha de expiración debe ser posterior a la fecha de publicación")
+     */
+    public function isFechaValida()
+    {
+        if($this->fechaPublicacion == null || $this->fechaExpiracion == null)
+        {
+            return true;
+        }
+
+        return $this->fechaExpiracion > $this->fechaPublicacion;
+    }
+
+    public function subirFoto($directorioDestino)
+    {
+        if($this->foto === null)
+        {
+            return;
+        }
+
+        $nombreArchivoFoto = uniqid('cupon-').'-foto1.jpg';
+
+        $this->foto->move($directorioDestino, $nombreArchivoFoto);
+
+        $this->setRutaFoto($nombreArchivoFoto);
     }
 }
