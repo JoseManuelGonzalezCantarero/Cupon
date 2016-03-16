@@ -1,6 +1,11 @@
 <select id="ciudadseleccionada">
     {% for ciudad in ciudades %}
-        <option value="{{ ciudad.slug }}" data-url="{{ url('ciudadCambiar', { 'ciudad': ciudad.slug }) }}" {{ ciudadActual == ciudad.slug ? 'selected="selected"' : '' }}>
+        <option value="{{ ciudad.slug }}"
+                data-url="{{ is_granted('ROLE_ADMIN')
+                ? url('backendCiudadCambiar', { 'ciudad': ciudad.slug })
+                : url('ciudadCambiar', { 'ciudad': ciudad.slug })
+                }}"
+                {{ ciudadActual == ciudad.slug ? 'selected="selected"' : '' }}>
             {{ ciudad.nombre }}
         </option>
     {% endfor %}
