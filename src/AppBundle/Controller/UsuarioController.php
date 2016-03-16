@@ -32,7 +32,7 @@ class UsuarioController extends Controller
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/{_locale}/usuario/login/", name="usuarioLogin", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
+     * @Route("/usuario/login/", name="usuarioLogin")
      */
     public function loginAction()
     {
@@ -55,7 +55,7 @@ class UsuarioController extends Controller
     }
 
     /**
-     * @Route("/{_locale}/usuario/login_check/", name="usuarioLoginCheck", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
+     * @Route("/usuario/login_check/", name="usuarioLoginCheck")
      */
     public function loginCheckAction()
     {
@@ -63,7 +63,7 @@ class UsuarioController extends Controller
     }
 
     /**
-     * @Route("/{_locale}/usuario/logout/", name="usuarioLogout", defaults={"_locale": "es"}, requirements={"_locale": "es|en"})
+     * @Route("/usuario/logout/", name="usuarioLogout")
      */
     public function logoutAction()
     {

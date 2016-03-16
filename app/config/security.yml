@@ -22,9 +22,9 @@ security:
                 path: /usuario/logout/
 
     access_control:
-        - { path: ^/(es|en)/usuario/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/(es|en)/usuario/registro, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/(es|en)/usuario/*, roles: ROLE_USUARIO }
+        - { path: ^/usuario/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/usuario/registro, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/usuario/*, roles: ROLE_USUARIO }
         - { path: ^/extranet/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/extranet/*, roles: ROLE_TIENDA }
 
